@@ -1,0 +1,769 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Panel de administración | Fidness Web</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+
+    <style>
+
+        /* ======================================
+           ESTILOS GENERALES
+        ====================================== */
+
+        body {
+            margin: 0;
+            background-color: #f3f6fb;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ======================================
+           MENÚ LATERAL
+        ====================================== */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #172b4d;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 15px;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 35px;
+        }
+
+        .sidebar-brand span {
+            color: #60a5fa;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 13px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .sidebar a i {
+            margin-right: 8px;
+        }
+
+        /* ======================================
+           CERRAR SESIÓN
+        ====================================== */
+
+        .logout-form {
+            margin-top: 30px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #fca5a5;
+            padding: 13px 16px;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #7f1d1d;
+            color: white;
+        }
+
+        /* ======================================
+           CONTENIDO PRINCIPAL
+        ====================================== */
+
+        .main-content {
+            margin-left: 250px;
+            padding: 35px;
+        }
+
+        .page-title {
+            font-weight: bold;
+            color: #172b4d;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+        }
+
+        /* ======================================
+           TARJETAS DE ESTADÍSTICAS
+        ====================================== */
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #172b4d;
+            margin: 0;
+        }
+
+        .stat-icon {
+            font-size: 30px;
+            color: #2563eb;
+        }
+
+        /* ======================================
+           SECCIONES DEL DASHBOARD
+        ====================================== */
+
+        .section-card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: #172b4d;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* ======================================
+           INFORMACIÓN DE CLASES
+        ====================================== */
+
+        .class-detail {
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .class-detail i {
+            color: #2563eb;
+            margin-right: 8px;
+        }
+
+        /* ======================================
+           ACCESOS RÁPIDOS
+        ====================================== */
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            color: #2563eb;
+            text-decoration: none;
+            height: 100%;
+            transition: 0.2s;
+        }
+
+        .quick-link:hover {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #1d4ed8;
+        }
+
+        .quick-link i {
+            font-size: 22px;
+        }
+
+        /* ======================================
+           DISEÑO RESPONSIVO
+        ====================================== */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .stat-card,
+            .section-card {
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- ========================================= -->
+<!-- MENÚ LATERAL DEL ADMINISTRADOR -->
+<!-- ========================================= -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-brand">
+        FIDNESS <span>WEB</span>
+    </div>
+
+    <!-- DASHBOARD -->
+
+    <a th:href="@{/admin/dashboard}"
+       class="active"
+       aria-current="page">
+
+        <i class="bi bi-speedometer2"></i>
+        Dashboard
+
+    </a>
+
+    <!-- GESTIÓN DE CLIENTES -->
+
+    <a th:href="@{/admin/clientes}">
+
+        <i class="bi bi-people"></i>
+        Gestión de clientes
+
+    </a>
+
+    <!-- GESTIÓN DE ENTRENADORES -->
+
+    <a th:href="@{/admin/entrenadores}">
+
+        <i class="bi bi-person-badge"></i>
+        Gestión de entrenadores
+
+    </a>
+
+    <!-- GESTIÓN DE EJERCICIOS -->
+
+    <a th:href="@{/admin/ejercicios}">
+
+        <i class="bi bi-activity"></i>
+        Gestión de ejercicios
+
+    </a>
+
+    <!-- GESTIÓN DE CATEGORÍAS -->
+
+    <a th:href="@{/admin/categorias}">
+
+        <i class="bi bi-tags"></i>
+        Gestión de categorías
+
+    </a>
+
+    <!-- CERRAR SESIÓN -->
+
+    <form th:action="@{/logout}"
+          method="post"
+          class="logout-form">
+
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}">
+
+        <button type="submit"
+                class="logout-btn">
+
+            <i class="bi bi-box-arrow-right"></i>
+            Cerrar sesión
+
+        </button>
+
+    </form>
+
+</aside>
+
+<!-- ========================================= -->
+<!-- CONTENIDO PRINCIPAL -->
+<!-- ========================================= -->
+
+<main class="main-content">
+
+    <!-- ========================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================= -->
+
+    <div class="mb-4">
+
+        <h2 class="page-title">
+            Panel de administración
+        </h2>
+
+        <p class="page-subtitle">
+            Consulta las estadísticas generales
+            y administra los recursos de Fidness Web.
+        </p>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- ESTADÍSTICAS GENERALES -->
+    <!-- ========================================= -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- 1. USUARIOS REGISTRADOS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Usuarios registrados
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${totalUsuarios}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-person-circle stat-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- 2. CLIENTES REGISTRADOS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Clientes registrados
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${totalClientes}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-people stat-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- 3. ENTRENADORES REGISTRADOS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Entrenadores registrados
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${totalEntrenadores}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-person-badge stat-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- 4. CATEGORÍAS DISPONIBLES -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Categorías disponibles
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${totalCategorias}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-tags stat-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- 5. EJERCICIOS REGISTRADOS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Ejercicios registrados
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${totalEjercicios}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-activity stat-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- 6. CLASES PROGRAMADAS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Clases programadas
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${clasesProgramadas}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-calendar2-check stat-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- 7. CLASES CANCELADAS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Clases canceladas
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${clasesCanceladas}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-calendar-x stat-icon"></i>
+
+            </div>
+
+        </div>
+
+        <!-- 8. TOTAL DE RESERVAS -->
+
+        <div class="col-md-6 col-xl-3">
+
+            <div class="stat-card">
+
+                <div>
+
+                    <div class="stat-label">
+                        Total de reservas
+                    </div>
+
+                    <div class="stat-number"
+                         th:text="${totalReservas}">
+                        0
+                    </div>
+
+                </div>
+
+                <i class="bi bi-clipboard-check stat-icon"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- PRÓXIMA CLASE PROGRAMADA -->
+    <!-- ========================================= -->
+
+    <div class="section-card">
+
+        <h4 class="section-title">
+
+            <i class="bi bi-calendar-event text-primary"></i>
+            Próxima clase programada
+
+        </h4>
+
+        <!-- CUANDO EXISTE UNA CLASE -->
+
+        <div th:if="${proximaClase != null}">
+
+            <div class="d-flex justify-content-between
+                        align-items-start flex-wrap gap-2 mb-3">
+
+                <h5 th:text="${proximaClase.nombre}">
+                    Nombre de la clase
+                </h5>
+
+                <span class="badge bg-primary">
+                    Programada
+                </span>
+
+            </div>
+
+            <div class="row">
+
+                <!-- FECHA Y HORA -->
+
+                <div class="col-md-6">
+
+                    <p class="class-detail">
+
+                        <i class="bi bi-calendar3"></i>
+
+                        <strong>Fecha:</strong>
+
+                        <span th:text="${#temporals.format(
+                            proximaClase.fecha,
+                            'dd/MM/yyyy')}">
+                            14/11/2026
+                        </span>
+
+                    </p>
+
+                    <p class="class-detail">
+
+                        <i class="bi bi-clock"></i>
+
+                        <strong>Hora:</strong>
+
+                        <span th:text="${#temporals.format(
+                            proximaClase.horaInicio,
+                            'HH:mm')}">
+                            10:00
+                        </span>
+
+                    </p>
+
+                </div>
+
+                <!-- ENTRENADOR Y CAPACIDAD -->
+
+                <div class="col-md-6">
+
+                    <p class="class-detail">
+
+                        <i class="bi bi-person-badge"></i>
+
+                        <strong>Entrenador:</strong>
+
+                        <span th:text="${proximaClase.entrenador.usuario.nombre
+                            + ' ' +
+                            proximaClase.entrenador.usuario.apellidos}">
+                            Nombre del entrenador
+                        </span>
+
+                    </p>
+
+                    <p class="class-detail">
+
+                        <i class="bi bi-people"></i>
+
+                        <strong>Capacidad máxima:</strong>
+
+                        <span th:text="${proximaClase.capacidadMaxima}">
+                            25
+                        </span>
+
+                        personas
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CUANDO NO HAY CLASES FUTURAS -->
+
+        <div th:if="${proximaClase == null}"
+             class="text-center py-4">
+
+            <i class="bi bi-calendar-x"
+               style="font-size: 38px; color: #94a3b8;"></i>
+
+            <h6 class="mt-3">
+                No hay próximas clases programadas
+            </h6>
+
+            <p class="text-muted mb-0">
+                Actualmente no existen clases futuras
+                disponibles en el sistema.
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- ACCESOS RÁPIDOS -->
+    <!-- ========================================= -->
+
+    <div class="section-card">
+
+        <h4 class="section-title">
+
+            <i class="bi bi-grid text-primary"></i>
+            Accesos rápidos
+
+        </h4>
+
+        <div class="row g-3">
+
+            <!-- ADMINISTRAR CLIENTES -->
+
+            <div class="col-md-6">
+
+                <a th:href="@{/admin/clientes}"
+                   class="quick-link">
+
+                    <i class="bi bi-people"></i>
+
+                    <span>
+                        Administrar clientes
+                    </span>
+
+                </a>
+
+            </div>
+
+            <!-- ADMINISTRAR ENTRENADORES -->
+
+            <div class="col-md-6">
+
+                <a th:href="@{/admin/entrenadores}"
+                   class="quick-link">
+
+                    <i class="bi bi-person-badge"></i>
+
+                    <span>
+                        Administrar entrenadores
+                    </span>
+
+                </a>
+
+            </div>
+
+            <!-- ADMINISTRAR EJERCICIOS -->
+
+            <div class="col-md-6">
+
+                <a th:href="@{/admin/ejercicios}"
+                   class="quick-link">
+
+                    <i class="bi bi-activity"></i>
+
+                    <span>
+                        Administrar ejercicios
+                    </span>
+
+                </a>
+
+            </div>
+
+            <!-- ADMINISTRAR CATEGORÍAS -->
+
+            <div class="col-md-6">
+
+                <a th:href="@{/admin/categorias}"
+                   class="quick-link">
+
+                    <i class="bi bi-tags"></i>
+
+                    <span>
+                        Administrar categorías
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>
