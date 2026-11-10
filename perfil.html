@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mi perfil | Fidness Web</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #14213d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 15px;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 35px;
+        }
+
+        .page-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 950px;
+        }
+
+        .section-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .profile-icon {
+            font-size: 42px;
+            color: #2563eb;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Menú lateral del cliente -->
+    <div class="sidebar">
+
+        <h3>FIDNESS WEB</h3>
+
+        <a th:href="@{/cliente/dashboard}">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <a href="#" class="text-secondary"
+           title="Funcionalidad pendiente">
+            <i class="bi bi-calendar-check"></i>
+            Reservar clases
+        </a>
+
+        <a href="#" class="text-secondary"
+           title="Funcionalidad pendiente">
+            <i class="bi bi-clock-history"></i>
+            Mis reservas
+        </a>
+
+        <a th:href="@{/cliente/perfil}" class="active">
+            <i class="bi bi-person-circle"></i>
+            Mi perfil
+        </a>
+
+        <form th:action="@{/logout}"
+              method="post"
+              class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-outline-light w-100">
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+
+        <div class="mb-4">
+            <h2 class="page-title">
+                Mi perfil
+            </h2>
+
+            <p class="text-muted">
+                Consulta y actualiza tu información personal.
+            </p>
+        </div>
+
+        <!-- Mensaje de éxito -->
+        <div th:if="${mensaje}"
+             class="alert alert-success"
+             role="alert">
+
+            <i class="bi bi-check-circle"></i>
+            <span th:text="${mensaje}"></span>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div th:if="${mensajeError}"
+             class="alert alert-danger"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle"></i>
+            <span th:text="${mensajeError}"></span>
+        </div>
+
+        <!-- Tarjeta del perfil -->
+        <div class="content-card">
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+
+                <i class="bi bi-person-circle profile-icon"></i>
+
+                <div>
+                    <h5 class="section-title mb-1"
+                        th:text="${usuario.nombre + ' ' + usuario.apellidos}">
+                        Nombre del cliente
+                    </h5>
+
+                    <p class="text-muted mb-0"
+                       th:text="${usuario.correo}">
+                        correo@fidness.com
+                    </p>
+                </div>
+
+            </div>
+
+            <hr class="mb-4">
+
+            <h5 class="section-title mb-4">
+                <i class="bi bi-person-vcard"></i>
+                Información personal
+            </h5>
+
+            <!-- Formulario para actualizar perfil -->
+            <form th:action="@{/cliente/perfil/actualizar}"
+                  method="post">
+
+                <div class="row g-3">
+
+                    <!-- Nombre -->
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">
+                            Nombre <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="nombre"
+                               name="nombre"
+                               th:value="${usuario.nombre}"
+                               maxlength="80"
+                               required>
+                    </div>
+
+                    <!-- Apellidos -->
+                    <div class="col-md-6">
+                        <label for="apellidos" class="form-label">
+                            Apellidos <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="apellidos"
+                               name="apellidos"
+                               th:value="${usuario.apellidos}"
+                               maxlength="100"
+                               required>
+                    </div>
+
+                    <!-- Correo electrónico -->
+                    <div class="col-md-6">
+                        <label for="correo" class="form-label">
+                            Correo electrónico
+                        </label>
+
+                        <input type="email"
+                               class="form-control"
+                               id="correo"
+                               th:value="${usuario.correo}"
+                               readonly>
+
+                        <div class="form-text">
+                            El correo electrónico no se puede
+                            modificar desde esta pantalla.
+                        </div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="col-md-6">
+                        <label for="telefono" class="form-label">
+                            Teléfono
+                        </label>
+
+                        <input type="tel"
+                               class="form-control"
+                               id="telefono"
+                               name="telefono"
+                               th:value="${usuario.telefono}"
+                               maxlength="20">
+                    </div>
+
+                    <!-- Fecha de nacimiento -->
+                    <div class="col-md-6">
+                        <label for="fechaNacimiento"
+                               class="form-label">
+                            Fecha de nacimiento
+                        </label>
+
+                        <input type="date"
+                               class="form-control"
+                               id="fechaNacimiento"
+                               name="fechaNacimiento"
+                               th:value="${usuario.fechaNacimiento}"
+                               th:attr="max=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                    </div>
+
+                    <!-- Estado de la cuenta -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            Estado de la cuenta
+                        </label>
+
+                        <div class="form-control bg-light">
+                            <span th:if="${usuario.estado}"
+                                  class="badge bg-success">
+                                Activa
+                            </span>
+
+                            <span th:unless="${usuario.estado}"
+                                  class="badge bg-secondary">
+                                Inactiva
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/cliente/dashboard}"
+                       class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="bi bi-save"></i>
+                        Guardar cambios
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
