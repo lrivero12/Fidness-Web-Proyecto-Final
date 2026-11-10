@@ -4,7 +4,7 @@
 **Universidad Fidélitas**  
 **Curso:** Desarrollo de Aplicaciones Web y Patrones  
 **Proyecto:** Fidness Web  
-**Equipo:** Grupo #3  
+**Equipo:** Grupo #10 
 **Etapa:** Segundo avance del proyecto final  
 **Año:** 2026
 
