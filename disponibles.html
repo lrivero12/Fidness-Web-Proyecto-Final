@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Reservar clases | Fidness Web</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6fb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        /* MENÚ LATERAL */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #14213d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 15px;
+            z-index: 1000;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+
+        .main-content {
+            margin-left: 250px;
+            padding: 35px;
+        }
+
+        .page-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            height: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .class-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        .class-description {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .class-info {
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .class-info i {
+            color: #2563eb;
+            margin-right: 7px;
+        }
+
+        .class-action {
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 12px;
+            padding: 60px 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===================================== -->
+    <!-- MENÚ LATERAL DEL CLIENTE -->
+    <!-- ===================================== -->
+
+    <div class="sidebar">
+
+        <h3>FIDNESS WEB</h3>
+
+        <!-- Dashboard -->
+        <a th:href="@{/cliente/dashboard}">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <!-- Reservar clases -->
+        <a th:href="@{/cliente/reservas/disponibles}"
+           class="active"
+           aria-current="page">
+            <i class="bi bi-calendar-check"></i>
+            Reservar clases
+        </a>
+
+        <!-- Mis reservas -->
+        <a th:href="@{/cliente/reservas/mis-reservas}">
+            <i class="bi bi-clock-history"></i>
+            Mis reservas
+        </a>
+
+        <!-- Mi perfil -->
+        <a th:href="@{/cliente/perfil}">
+            <i class="bi bi-person-circle"></i>
+            Mi perfil
+        </a>
+
+        <!-- Cerrar sesión -->
+        <form th:action="@{/logout}"
+              method="post"
+              class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-outline-light w-100">
+
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- CONTENIDO PRINCIPAL -->
+    <!-- ===================================== -->
+
+    <div class="main-content">
+
+        <!-- ENCABEZADO -->
+
+        <div class="mb-4">
+
+            <h2 class="page-title">
+                Reservar clases
+            </h2>
+
+            <p class="text-muted">
+                Consulta las clases disponibles
+                y solicita tu participación.
+            </p>
+
+        </div>
+
+        <!-- MENSAJE DE ERROR -->
+
+        <div th:if="${mensajeError}"
+             class="alert alert-danger"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle"></i>
+            <span th:text="${mensajeError}"></span>
+
+        </div>
+
+        <!-- MENSAJE DE ÉXITO -->
+
+        <div th:if="${mensaje}"
+             class="alert alert-success"
+             role="alert">
+
+            <i class="bi bi-check-circle"></i>
+            <span th:text="${mensaje}"></span>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- CLASES DISPONIBLES -->
+        <!-- ===================================== -->
+
+        <div class="row g-4"
+             th:if="${!#lists.isEmpty(clases)}">
+
+            <div class="col-md-6 col-xl-4"
+                 th:each="clase : ${clases}">
+
+                <div class="content-card">
+
+                    <!-- Encabezado de clase -->
+
+                    <div class="d-flex justify-content-between
+                                align-items-start gap-2 mb-3">
+
+                        <h5 class="class-title mb-0"
+                            th:text="${clase.nombre}">
+                            Nombre de la clase
+                        </h5>
+
+                        <span class="badge bg-success">
+                            Disponible
+                        </span>
+
+                    </div>
+
+                    <!-- Descripción -->
+
+                    <p class="class-description"
+                       th:if="${clase.descripcion != null
+                                and !clase.descripcion.isEmpty()}"
+                       th:text="${clase.descripcion}">
+                        Descripción de la clase.
+                    </p>
+
+                    <hr>
+
+                    <!-- Fecha -->
+
+                    <div class="class-info">
+
+                        <i class="bi bi-calendar-event"></i>
+
+                        <strong>Fecha:</strong>
+
+                        <span th:text="${#temporals.format(clase.fecha, 'dd/MM/yyyy')}">
+                        </span>
+
+                    </div>
+
+                    <!-- Hora -->
+
+                    <div class="class-info">
+
+                        <i class="bi bi-clock"></i>
+
+                        <strong>Hora:</strong>
+
+                        <span th:text="${#temporals.format(clase.horaInicio, 'HH:mm')}">
+                        </span>
+
+                    </div>
+
+                    <!-- Duración -->
+
+                    <div class="class-info">
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                        <strong>Duración:</strong>
+
+                        <span th:text="${clase.duracionMinutos}">
+                        </span>
+                        minutos
+
+                    </div>
+
+                    <!-- Capacidad -->
+
+                    <div class="class-info">
+
+                        <i class="bi bi-people"></i>
+
+                        <strong>Capacidad máxima:</strong>
+
+                        <span th:text="${clase.capacidadMaxima}">
+                        </span>
+                        participantes
+
+                    </div>
+
+                    <!-- Entrenador -->
+
+                    <div class="class-info">
+
+                        <i class="bi bi-person-badge"></i>
+
+                        <strong>Entrenador:</strong>
+
+                        <span th:text="${clase.entrenador.usuario.nombre
+                            + ' ' + clase.entrenador.usuario.apellidos}">
+                            Nombre del entrenador
+                        </span>
+
+                    </div>
+
+                    <!-- ================================= -->
+                    <!-- BOTÓN PARA RESERVAR -->
+                    <!-- ================================= -->
+
+                    <div class="class-action">
+
+                        <form th:action="@{/cliente/reservas/registrar/{idClase}(idClase=${clase.idClase})}"
+                              method="post">
+
+                            <button type="submit"
+                                    class="btn btn-primary w-100"
+                                    onclick="return confirm('¿Deseas solicitar una reserva para esta clase?');">
+
+                                <i class="bi bi-calendar-plus"></i>
+                                Solicitar reserva
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- SIN CLASES DISPONIBLES -->
+        <!-- ===================================== -->
+
+        <div class="empty-state"
+             th:if="${#lists.isEmpty(clases)}">
+
+            <i class="bi bi-calendar-x"></i>
+
+            <h5 class="mt-3">
+                No hay clases disponibles
+            </h5>
+
+            <p class="text-muted">
+                Actualmente no existen clases futuras
+                disponibles para reservar.
+            </p>
+
+            <a th:href="@{/cliente/dashboard}"
+               class="btn btn-outline-primary mt-2">
+
+                <i class="bi bi-arrow-left"></i>
+                Volver al dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
