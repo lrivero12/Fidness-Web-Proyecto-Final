@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Crear cuenta | Fidness Web</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-color: #f3f6fb;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px;
+        }
+
+        .register-card {
+            background: white;
+            width: 100%;
+            max-width: 520px;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .brand {
+            text-align: center;
+            color: #2563eb;
+            font-size: 27px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-title {
+            text-align: center;
+            margin: 25px 0;
+            color: #14213d;
+            font-size: 21px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            background-color: #e8f0fe;
+            border-radius: 7px;
+            padding: 11px;
+        }
+
+        .form-control:focus {
+            background-color: white;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 0.2rem
+                        rgba(37,99,235,0.15);
+        }
+
+        .btn-register {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            border-radius: 7px;
+        }
+
+        .btn-register:hover {
+            background-color: #1d4ed8;
+            color: white;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        @media (max-width: 576px) {
+            .register-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-card">
+
+        <!-- ENCABEZADO -->
+
+        <div class="brand">
+            FIDNESS WEB
+        </div>
+
+        <p class="subtitle">
+            Bienvenido a tu espacio de entrenamiento
+        </p>
+
+        <h3 class="form-title">
+            Crear cuenta de cliente
+        </h3>
+
+        <!-- MENSAJE DE ERROR -->
+
+        <div th:if="${mensajeError}"
+             class="alert alert-danger"
+             role="alert"
+             th:text="${mensajeError}">
+        </div>
+
+        <!-- FORMULARIO DE REGISTRO -->
+
+        <form th:action="@{/registro}"
+              method="post">
+
+            <!-- TOKEN CSRF -->
+
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
+
+            <div class="row g-3">
+
+                <!-- NOMBRE -->
+
+                <div class="col-md-6">
+
+                    <label for="nombre" class="form-label">
+                        Nombre <span class="required">*</span>
+                    </label>
+
+                    <input type="text"
+                           id="nombre"
+                           name="nombre"
+                           class="form-control"
+                           placeholder="Tu nombre"
+                           maxlength="80"
+                           autocomplete="given-name"
+                           required>
+
+                </div>
+
+                <!-- APELLIDOS -->
+
+                <div class="col-md-6">
+
+                    <label for="apellidos" class="form-label">
+                        Apellidos <span class="required">*</span>
+                    </label>
+
+                    <input type="text"
+                           id="apellidos"
+                           name="apellidos"
+                           class="form-control"
+                           placeholder="Tus apellidos"
+                           maxlength="100"
+                           autocomplete="family-name"
+                           required>
+
+                </div>
+
+                <!-- CORREO ELECTRÓNICO -->
+
+                <div class="col-12">
+
+                    <label for="correo" class="form-label">
+                        Correo electrónico
+                        <span class="required">*</span>
+                    </label>
+
+                    <input type="email"
+                           id="correo"
+                           name="correo"
+                           class="form-control"
+                           placeholder="ejemplo@correo.com"
+                           maxlength="150"
+                           autocomplete="email"
+                           required>
+
+                </div>
+
+                <!-- TELÉFONO -->
+
+                <div class="col-md-6">
+
+                    <label for="telefono" class="form-label">
+                        Teléfono (opcional)
+                    </label>
+
+                    <input type="tel"
+                           id="telefono"
+                           name="telefono"
+                           class="form-control"
+                           placeholder="8888-8888"
+                           maxlength="20"
+                           autocomplete="tel">
+
+                </div>
+
+                <!-- FECHA DE NACIMIENTO -->
+
+                <div class="col-md-6">
+
+                    <label for="fechaNacimiento"
+                           class="form-label">
+                        Fecha de nacimiento (opcional)
+                    </label>
+
+                    <input type="date"
+                           id="fechaNacimiento"
+                           name="fechaNacimiento"
+                           class="form-control">
+
+                </div>
+
+                <!-- CONTRASEÑA -->
+
+                <div class="col-12">
+
+                    <label for="contrasena" class="form-label">
+                        Contraseña
+                        <span class="required">*</span>
+                    </label>
+
+                    <input type="password"
+                           id="contrasena"
+                           name="contrasena"
+                           class="form-control"
+                           placeholder="Mínimo 8 caracteres"
+                           minlength="8"
+                           autocomplete="new-password"
+                           required>
+
+                    <div class="form-text">
+                        La contraseña debe tener al menos
+                        8 caracteres.
+                    </div>
+
+                </div>
+
+                <!-- CONFIRMAR CONTRASEÑA -->
+
+                <div class="col-12">
+
+                    <label for="confirmarContrasena"
+                           class="form-label">
+                        Confirmar contraseña
+                        <span class="required">*</span>
+                    </label>
+
+                    <input type="password"
+                           id="confirmarContrasena"
+                           name="confirmarContrasena"
+                           class="form-control"
+                           placeholder="Repite tu contraseña"
+                           minlength="8"
+                           autocomplete="new-password"
+                           required>
+
+                </div>
+
+            </div>
+
+            <!-- BOTÓN DE REGISTRO -->
+
+            <div class="d-grid mt-4">
+
+                <button type="submit"
+                        class="btn btn-register">
+
+                    <i class="bi bi-person-plus"></i>
+                    Crear mi cuenta
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- VOLVER AL LOGIN -->
+
+        <div class="login-link">
+
+            ¿Ya tienes una cuenta?
+
+            <a th:href="@{/login}">
+                Inicia sesión aquí
+            </a>
+
+        </div>
+
+        <!-- PIE DE PÁGINA -->
+
+        <div class="footer">
+            © 2026 Fidness Web
+        </div>
+
+    </div>
+
+</body>
+</html>

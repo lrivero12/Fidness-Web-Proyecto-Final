@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${titulo} + ' | Fidness Web'">
+        Formulario de clase | Fidness Web
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #14213d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 15px;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .sidebar .pending {
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 35px;
+        }
+
+        .page-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 900px;
+        }
+
+        .form-label {
+            color: #14213d;
+            font-weight: 600;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MENÚ LATERAL -->
+    <div class="sidebar">
+
+        <h3>FIDNESS WEB</h3>
+
+        <a th:href="@{/entrenador/dashboard}">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <a class="pending" aria-disabled="true">
+            <i class="bi bi-calendar-week"></i>
+            Mi agenda
+        </a>
+
+        <a th:href="@{/entrenador/clases}"
+           class="active">
+            <i class="bi bi-journal-text"></i>
+            Mis clases
+        </a>
+
+        <a class="pending" aria-disabled="true">
+            <i class="bi bi-clipboard-check"></i>
+            Solicitudes
+        </a>
+
+        <a class="pending" aria-disabled="true">
+            <i class="bi bi-people"></i>
+            Asistentes
+        </a>
+
+        <form th:action="@{/logout}"
+              method="post"
+              class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-outline-light w-100">
+
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+
+        <div class="mb-4">
+
+            <h2 class="page-title"
+                th:text="${titulo}">
+                Programar nueva clase
+            </h2>
+
+            <p class="text-muted">
+                Completa la información de la clase
+                de entrenamiento.
+            </p>
+
+        </div>
+
+        <div class="content-card">
+
+            <h5 class="mb-4">
+                <i class="bi bi-calendar-plus"></i>
+                Información de la clase
+            </h5>
+
+            <form method="post"
+                  th:action="${clase.idClase == null}
+                      ? @{/entrenador/clases/guardar}
+                      : @{/entrenador/clases/actualizar/{id}(id=${clase.idClase})}">
+
+                <div class="row g-3">
+
+                    <!-- Nombre -->
+                    <div class="col-md-12">
+
+                        <label for="nombre" class="form-label">
+                            Nombre de la clase
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               id="nombre"
+                               name="nombre"
+                               class="form-control"
+                               maxlength="100"
+                               th:value="${clase.nombre}"
+                               placeholder="Ejemplo: Entrenamiento funcional"
+                               required>
+
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="col-md-12">
+
+                        <label for="descripcion" class="form-label">
+                            Descripción
+                        </label>
+
+                        <textarea id="descripcion"
+                                  name="descripcion"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Describe los objetivos y actividades de la clase"
+                                  th:text="${clase.descripcion}"></textarea>
+
+                    </div>
+
+                    <!-- Fecha -->
+                    <div class="col-md-6">
+
+                        <label for="fecha" class="form-label">
+                            Fecha
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="date"
+                               id="fecha"
+                               name="fecha"
+                               class="form-control"
+                               th:value="${clase.fecha}"
+                               required>
+
+                    </div>
+
+                    <!-- Hora -->
+                    <div class="col-md-6">
+
+                        <label for="horaInicio" class="form-label">
+                            Hora de inicio
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="time"
+                               id="horaInicio"
+                               name="horaInicio"
+                               class="form-control"
+                               th:value="${clase.horaInicio}"
+                               required>
+
+                    </div>
+
+                    <!-- Duración -->
+                    <div class="col-md-6">
+
+                        <label for="duracionMinutos" class="form-label">
+                            Duración (minutos)
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="number"
+                               id="duracionMinutos"
+                               name="duracionMinutos"
+                               class="form-control"
+                               min="1"
+                               th:value="${clase.duracionMinutos}"
+                               placeholder="Ejemplo: 60"
+                               required>
+
+                    </div>
+
+                    <!-- Capacidad -->
+                    <div class="col-md-6">
+
+                        <label for="capacidadMaxima" class="form-label">
+                            Capacidad máxima
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="number"
+                               id="capacidadMaxima"
+                               name="capacidadMaxima"
+                               class="form-control"
+                               min="1"
+                               th:value="${clase.capacidadMaxima}"
+                               placeholder="Ejemplo: 15"
+                               required>
+
+                    </div>
+
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Botones -->
+                <div class="d-flex justify-content-end gap-2">
+
+                    <a th:href="@{/entrenador/clases}"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left"></i>
+                        Cancelar
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-floppy"></i>
+
+                        <span th:text="${clase.idClase == null}
+                            ? 'Programar clase'
+                            : 'Guardar cambios'">
+                            Programar clase
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

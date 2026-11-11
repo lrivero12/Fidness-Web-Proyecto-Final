@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mi agenda | Fidness Web</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6fb;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 200px;
+            min-height: 100vh;
+            background-color: #14213d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 12px;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 22px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .sidebar .pending {
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            padding: 30px;
+        }
+
+        .page-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .week-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .week-title {
+            color: #14213d;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .class-card {
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #2563eb;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
+            background-color: #ffffff;
+        }
+
+        .class-card.cancelled {
+            border-left-color: #dc3545;
+            background-color: #fff8f8;
+        }
+
+        .class-name {
+            color: #14213d;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .class-detail {
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 45px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MENÚ LATERAL -->
+    <div class="sidebar">
+
+        <h3>FIDNESS WEB</h3>
+
+        <a th:href="@{/entrenador/dashboard}">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <a th:href="@{/entrenador/clases/agenda}"
+           class="active">
+            <i class="bi bi-calendar-week"></i>
+            Mi agenda
+        </a>
+
+        <a th:href="@{/entrenador/clases}">
+            <i class="bi bi-journal-text"></i>
+            Mis clases
+        </a>
+
+        <a class="pending"
+           title="Funcionalidad pendiente">
+            <i class="bi bi-clipboard-check"></i>
+            Solicitudes
+        </a>
+
+        <a class="pending"
+           title="Funcionalidad pendiente">
+            <i class="bi bi-people"></i>
+            Asistentes
+        </a>
+
+        <form th:action="@{/logout}"
+              method="post"
+              class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-outline-light w-100">
+
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+
+        <div class="mb-4">
+
+            <h2 class="page-title">
+                Mi agenda semanal
+            </h2>
+
+            <p class="text-muted">
+                Consulta las clases de entrenamiento
+                programadas para cada semana.
+            </p>
+
+        </div>
+
+        <div class="content-card">
+
+            <!-- NAVEGACIÓN SEMANAL -->
+            <div class="week-header">
+
+                <div>
+                    <h5 class="week-title">
+                        <i class="bi bi-calendar3 text-primary"></i>
+                        Semana del
+                        <span th:text="${#temporals.format(inicioSemana, 'dd/MM/yyyy')}">
+                            09/11/2026
+                        </span>
+                        al
+                        <span th:text="${#temporals.format(finSemana, 'dd/MM/yyyy')}">
+                            15/11/2026
+                        </span>
+                    </h5>
+
+                    <small class="text-muted">
+                        Entrenador:
+                        <span th:text="${nombreEntrenador}">
+                            Entrenador
+                        </span>
+                    </small>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+
+                    <a class="btn btn-outline-primary"
+                       th:href="@{/entrenador/clases/agenda(fecha=${semanaAnterior})}">
+                        <i class="bi bi-chevron-left"></i>
+                        Anterior
+                    </a>
+
+                    <a class="btn btn-outline-secondary"
+                       th:href="@{/entrenador/clases/agenda}">
+                        Semana actual
+                    </a>
+
+                    <a class="btn btn-outline-primary"
+                       th:href="@{/entrenador/clases/agenda(fecha=${semanaSiguiente})}">
+                        Siguiente
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <!-- CLASES DE LA SEMANA -->
+            <div th:if="${!#lists.isEmpty(clases)}">
+
+                <div th:each="clase : ${clases}"
+                     class="class-card"
+                     th:classappend="${clase.estado == 'CANCELADA'} ? ' cancelled' : ''">
+
+                    <div class="d-flex justify-content-between
+                                align-items-start flex-wrap gap-2">
+
+                        <div>
+
+                            <h5 class="class-name"
+                                th:text="${clase.nombre}">
+                                Entrenamiento funcional
+                            </h5>
+
+                            <p class="class-detail">
+                                <i class="bi bi-calendar-event"></i>
+                                <span th:text="${#temporals.format(clase.fecha, 'dd/MM/yyyy')}">
+                                    18/11/2026
+                                </span>
+                            </p>
+
+                            <p class="class-detail">
+                                <i class="bi bi-clock"></i>
+                                <span th:text="${#temporals.format(clase.horaInicio, 'HH:mm')}">
+                                    10:00
+                                </span>
+
+                                ·
+
+                                <span th:text="${clase.duracionMinutos}">
+                                    75
+                                </span>
+                                minutos
+                            </p>
+
+                            <p class="class-detail">
+                                <i class="bi bi-people"></i>
+                                Capacidad máxima:
+                                <span th:text="${clase.capacidadMaxima}">
+                                    20
+                                </span>
+                                participantes
+                            </p>
+
+                            <p class="class-detail mb-0"
+                               th:if="${clase.descripcion != null and !clase.descripcion.isBlank()}"
+                               th:text="${clase.descripcion}">
+                                Descripción de la clase.
+                            </p>
+
+                        </div>
+
+                        <div>
+
+                            <span class="badge bg-primary"
+                                  th:if="${clase.estado == 'PROGRAMADA'}">
+                                Programada
+                            </span>
+
+                            <span class="badge bg-danger"
+                                  th:if="${clase.estado == 'CANCELADA'}">
+                                Cancelada
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- SIN CLASES -->
+            <div th:if="${#lists.isEmpty(clases)}"
+                 class="empty-state">
+
+                <i class="bi bi-calendar-x"></i>
+
+                <h5>No hay clases para esta semana</h5>
+
+                <p>
+                    No tienes clases registradas
+                    dentro del período seleccionado.
+                </p>
+
+                <a th:href="@{/entrenador/clases/nueva}"
+                   class="btn btn-primary mt-2">
+
+                    <i class="bi bi-calendar-plus"></i>
+                    Programar clase
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

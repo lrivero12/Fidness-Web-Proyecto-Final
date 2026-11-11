@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mis clases | Fidness Web</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6fb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        /* MENÚ LATERAL */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #14213d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 15px;
+            z-index: 1000;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .sidebar a.pending {
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .sidebar a.pending:hover {
+            background-color: transparent;
+            color: #64748b;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+
+        .main-content {
+            margin-left: 250px;
+            padding: 35px;
+        }
+
+        .page-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* TABLA DE CLASES */
+
+        .table th {
+            color: #334155;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .description-text {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* BOTONES */
+
+        .btn-primary {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        /* DISEÑO RESPONSIVO */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .content-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===================================== -->
+    <!-- MENÚ LATERAL DEL ENTRENADOR -->
+    <!-- ===================================== -->
+
+    <div class="sidebar">
+
+        <h3>FIDNESS WEB</h3>
+
+        <!-- Dashboard -->
+        <a th:href="@{/entrenador/dashboard}">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </a>
+
+        <!-- Mi agenda: FUNCIONAL -->
+        <a th:href="@{/entrenador/clases/agenda}">
+            <i class="bi bi-calendar-week"></i>
+            Mi agenda
+        </a>
+
+        <!-- Mis clases: PÁGINA ACTIVA -->
+        <a th:href="@{/entrenador/clases}"
+           class="active"
+           aria-current="page">
+            <i class="bi bi-journal-text"></i>
+            Mis clases
+        </a>
+
+        <!-- Solicitudes: PENDIENTE -->
+        <a class="pending"
+           title="Funcionalidad pendiente"
+           aria-disabled="true">
+            <i class="bi bi-clipboard-check"></i>
+            Solicitudes
+        </a>
+
+        <!-- Asistentes: PENDIENTE -->
+        <a class="pending"
+           title="Funcionalidad pendiente"
+           aria-disabled="true">
+            <i class="bi bi-people"></i>
+            Asistentes
+        </a>
+
+        <!-- Cerrar sesión -->
+        <form th:action="@{/logout}"
+              method="post"
+              class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-outline-light w-100">
+
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- ===================================== -->
+    <!-- CONTENIDO PRINCIPAL -->
+    <!-- ===================================== -->
+
+    <div class="main-content">
+
+        <!-- ENCABEZADO -->
+
+        <div class="d-flex justify-content-between
+                    align-items-center flex-wrap gap-3 mb-4">
+
+            <div>
+
+                <h2 class="page-title">
+                    Mis clases
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Consulta y administra tus clases
+                    de entrenamiento.
+                </p>
+
+            </div>
+
+            <!-- Programar nueva clase -->
+            <a th:href="@{/entrenador/clases/nueva}"
+               class="btn btn-primary">
+
+                <i class="bi bi-calendar-plus"></i>
+                Programar clase
+
+            </a>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- MENSAJES DEL SISTEMA -->
+        <!-- ===================================== -->
+
+        <!-- Mensaje de éxito -->
+        <div th:if="${mensaje}"
+             class="alert alert-success"
+             role="alert">
+
+            <i class="bi bi-check-circle"></i>
+            <span th:text="${mensaje}"></span>
+
+        </div>
+
+        <!-- Mensaje de error -->
+        <div th:if="${mensajeError}"
+             class="alert alert-danger"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle"></i>
+            <span th:text="${mensajeError}"></span>
+
+        </div>
+
+        <!-- ===================================== -->
+        <!-- LISTADO DE CLASES -->
+        <!-- ===================================== -->
+
+        <div class="content-card">
+
+            <h5 class="mb-4">
+
+                <i class="bi bi-journal-text"></i>
+                Clases programadas
+
+            </h5>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Clase</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Duración</th>
+                            <th>Capacidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <!-- CLASES DEL ENTRENADOR -->
+
+                        <tr th:each="clase : ${clases}">
+
+                            <!-- ID -->
+                            <td th:text="${clase.idClase}">
+                            </td>
+
+                            <!-- Nombre y descripción -->
+                            <td>
+
+                                <strong th:text="${clase.nombre}">
+                                    Nombre de la clase
+                                </strong>
+
+                                <div class="description-text"
+                                     th:if="${clase.descripcion != null
+                                              and !clase.descripcion.isEmpty()}"
+                                     th:text="${clase.descripcion}">
+                                </div>
+
+                            </td>
+
+                            <!-- Fecha -->
+                            <td th:text="${#temporals.format(clase.fecha, 'dd/MM/yyyy')}">
+                            </td>
+
+                            <!-- Hora -->
+                            <td th:text="${#temporals.format(clase.horaInicio, 'HH:mm')}">
+                            </td>
+
+                            <!-- Duración -->
+                            <td>
+                                <span th:text="${clase.duracionMinutos}">
+                                </span>
+                                min
+                            </td>
+
+                            <!-- Capacidad -->
+                            <td th:text="${clase.capacidadMaxima}">
+                            </td>
+
+                            <!-- Estado -->
+                            <td>
+
+                                <span th:if="${clase.estado == 'PROGRAMADA'}"
+                                      class="badge bg-primary">
+                                    Programada
+                                </span>
+
+                                <span th:if="${clase.estado == 'CANCELADA'}"
+                                      class="badge bg-danger">
+                                    Cancelada
+                                </span>
+
+                                <span th:if="${clase.estado == 'FINALIZADA'}"
+                                      class="badge bg-success">
+                                    Finalizada
+                                </span>
+
+                            </td>
+
+                            <!-- ACCIONES -->
+                            <td>
+
+                                <div class="action-buttons">
+
+                                    <!-- Editar clase -->
+                                    <a th:if="${clase.estado == 'PROGRAMADA'}"
+                                       th:href="@{/entrenador/clases/editar/{id}(id=${clase.idClase})}"
+                                       class="btn btn-sm btn-outline-primary">
+
+                                        <i class="bi bi-pencil-square"></i>
+                                        Editar
+
+                                    </a>
+
+                                    <!-- Cancelar clase -->
+                                    <form th:if="${clase.estado == 'PROGRAMADA'}"
+                                          th:action="@{/entrenador/clases/cancelar/{id}(id=${clase.idClase})}"
+                                          method="post">
+
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('¿Estás seguro de cancelar esta clase?');">
+
+                                            <i class="bi bi-x-circle"></i>
+                                            Cancelar
+
+                                        </button>
+
+                                    </form>
+
+                                    <!-- Sin acciones disponibles -->
+                                    <span th:unless="${clase.estado == 'PROGRAMADA'}"
+                                          class="text-muted small">
+                                        Sin acciones
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        <!-- ================================= -->
+                        <!-- SIN CLASES REGISTRADAS -->
+                        <!-- ================================= -->
+
+                        <tr th:if="${#lists.isEmpty(clases)}">
+
+                            <td colspan="8"
+                                class="text-center text-muted py-4">
+
+                                <i class="bi bi-info-circle"></i>
+                                Todavía no tienes clases registradas.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

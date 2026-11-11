@@ -1,0 +1,742 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Panel del entrenador | Fidness Web</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6fb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        /* =====================================
+           MENÚ LATERAL
+        ===================================== */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #14213d;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 15px;
+            z-index: 1000;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .sidebar a i {
+            margin-right: 5px;
+        }
+
+        /* =====================================
+           CONTENIDO PRINCIPAL
+        ===================================== */
+
+        .main-content {
+            margin-left: 250px;
+            padding: 35px;
+        }
+
+        .page-title,
+        .feature-title {
+            color: #14213d;
+            font-weight: bold;
+        }
+
+        /* =====================================
+           TARJETAS
+        ===================================== */
+
+        .welcome-card,
+        .content-card,
+        .stat-card,
+        .next-class-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .welcome-card {
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .content-card {
+            padding: 25px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .feature-action {
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
+        .user-info {
+            color: #475569;
+            font-size: 14px;
+        }
+
+        /* =====================================
+           TARJETAS DE ESTADÍSTICAS
+        ===================================== */
+
+        .stat-card {
+            padding: 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: bold;
+            color: #14213d;
+            margin-bottom: 0;
+        }
+
+        .stat-icon {
+            font-size: 30px;
+            color: #2563eb;
+        }
+
+        /* =====================================
+           PRÓXIMA CLASE
+        ===================================== */
+
+        .next-class-card {
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .class-detail {
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .class-detail i {
+            color: #2563eb;
+            margin-right: 7px;
+        }
+
+        /* =====================================
+           BOTONES
+        ===================================== */
+
+        .btn-primary {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        /* =====================================
+           DISEÑO RESPONSIVO
+        ===================================== */
+
+        @media (max-width: 768px) {
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .welcome-card,
+            .content-card,
+            .stat-card,
+            .next-class-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========================================= -->
+    <!-- MENÚ LATERAL DEL ENTRENADOR -->
+    <!-- ========================================= -->
+
+    <div class="sidebar">
+
+        <h3>FIDNESS WEB</h3>
+
+        <!-- DASHBOARD -->
+        <a th:href="@{/entrenador/dashboard}"
+           class="active"
+           aria-current="page">
+
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+
+        </a>
+
+        <!-- MI AGENDA -->
+        <a th:href="@{/entrenador/clases/agenda}">
+
+            <i class="bi bi-calendar-week"></i>
+            Mi agenda
+
+        </a>
+
+        <!-- MIS CLASES -->
+        <a th:href="@{/entrenador/clases}">
+
+            <i class="bi bi-journal-text"></i>
+            Mis clases
+
+        </a>
+
+        <!-- SOLICITUDES -->
+        <a th:href="@{/entrenador/solicitudes}">
+
+            <i class="bi bi-clipboard-check"></i>
+            Solicitudes
+
+        </a>
+
+        <!-- ASISTENTES -->
+        <a th:href="@{/entrenador/asistentes}">
+
+            <i class="bi bi-people"></i>
+            Asistentes
+
+        </a>
+
+        <!-- CERRAR SESIÓN -->
+        <form th:action="@{/logout}"
+              method="post"
+              class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-outline-light w-100">
+
+                <i class="bi bi-box-arrow-right"></i>
+                Cerrar sesión
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- CONTENIDO PRINCIPAL -->
+    <!-- ========================================= -->
+
+    <div class="main-content">
+
+        <!-- ========================================= -->
+        <!-- ENCABEZADO -->
+        <!-- ========================================= -->
+
+        <div class="mb-4">
+
+            <h2 class="page-title">
+                Panel del entrenador
+            </h2>
+
+            <p class="text-muted">
+                Administra tus clases, solicitudes
+                y actividades de entrenamiento.
+            </p>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- BIENVENIDA PERSONALIZADA -->
+        <!-- ========================================= -->
+
+        <div class="welcome-card">
+
+            <h4 class="feature-title">
+
+                <i class="bi bi-person-check text-primary"></i>
+
+                ¡Bienvenido,
+                <span th:text="${usuario.nombre}">
+                    Entrenador
+                </span>!
+
+            </h4>
+
+            <p class="text-muted mt-3 mb-3">
+                Has iniciado sesión correctamente
+                como entrenador de Fidness Web.
+            </p>
+
+            <div class="row g-3">
+
+                <!-- NOMBRE COMPLETO -->
+                <div class="col-md-6">
+
+                    <p class="user-info mb-1">
+                        Nombre completo
+                    </p>
+
+                    <strong th:text="${nombreCompleto}">
+                        Nombre del entrenador
+                    </strong>
+
+                </div>
+
+                <!-- CORREO ELECTRÓNICO -->
+                <div class="col-md-6">
+
+                    <p class="user-info mb-1">
+                        Correo electrónico
+                    </p>
+
+                    <strong th:text="${usuario.correo}">
+                        entrenador@fidness.com
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- ESTADÍSTICAS DEL ENTRENADOR -->
+        <!-- ========================================= -->
+
+        <div class="row g-4 mb-4">
+
+            <!-- CLASES PROGRAMADAS -->
+            <div class="col-md-4">
+
+                <div class="stat-card">
+
+                    <div>
+
+                        <p class="stat-label">
+                            Clases programadas
+                        </p>
+
+                        <h3 class="stat-value"
+                            th:text="${clasesProgramadas}">
+                            0
+                        </h3>
+
+                    </div>
+
+                    <i class="bi bi-calendar2-check stat-icon"></i>
+
+                </div>
+
+            </div>
+
+            <!-- SOLICITUDES PENDIENTES -->
+            <div class="col-md-4">
+
+                <div class="stat-card">
+
+                    <div>
+
+                        <p class="stat-label">
+                            Solicitudes pendientes
+                        </p>
+
+                        <h3 class="stat-value"
+                            th:text="${solicitudesPendientes}">
+                            0
+                        </h3>
+
+                    </div>
+
+                    <i class="bi bi-hourglass-split stat-icon"></i>
+
+                </div>
+
+            </div>
+
+            <!-- RESERVAS CONFIRMADAS -->
+            <div class="col-md-4">
+
+                <div class="stat-card">
+
+                    <div>
+
+                        <p class="stat-label">
+                            Reservas confirmadas
+                        </p>
+
+                        <h3 class="stat-value"
+                            th:text="${reservasConfirmadas}">
+                            0
+                        </h3>
+
+                    </div>
+
+                    <i class="bi bi-check-circle stat-icon"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- PRÓXIMA CLASE PROGRAMADA -->
+        <!-- ========================================= -->
+
+        <div class="next-class-card">
+
+            <h5 class="feature-title mb-4">
+
+                <i class="bi bi-calendar-event text-primary"></i>
+                Mi próxima clase
+
+            </h5>
+
+            <!-- CUANDO EXISTE UNA PRÓXIMA CLASE -->
+
+            <div th:if="${proximaClase != null}">
+
+                <div class="d-flex justify-content-between
+                            align-items-start flex-wrap gap-2 mb-3">
+
+                    <h5 th:text="${proximaClase.nombre}">
+                        Nombre de la clase
+                    </h5>
+
+                    <span class="badge bg-primary">
+                        Programada
+                    </span>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- FECHA Y HORA -->
+                    <div class="col-md-6">
+
+                        <p class="class-detail">
+
+                            <i class="bi bi-calendar3"></i>
+
+                            <strong>Fecha:</strong>
+
+                            <span th:text="${#temporals.format(
+                                proximaClase.fecha,
+                                'dd/MM/yyyy')}">
+                                20/11/2026
+                            </span>
+
+                        </p>
+
+                        <p class="class-detail">
+
+                            <i class="bi bi-clock"></i>
+
+                            <strong>Hora:</strong>
+
+                            <span th:text="${#temporals.format(
+                                proximaClase.horaInicio,
+                                'HH:mm')}">
+                                09:00
+                            </span>
+
+                        </p>
+
+                    </div>
+
+                    <!-- DURACIÓN Y CAPACIDAD -->
+                    <div class="col-md-6">
+
+                        <p class="class-detail">
+
+                            <i class="bi bi-hourglass"></i>
+
+                            <strong>Duración:</strong>
+
+                            <span th:text="${proximaClase.duracionMinutos}">
+                                60
+                            </span>
+
+                            minutos
+
+                        </p>
+
+                        <p class="class-detail">
+
+                            <i class="bi bi-people"></i>
+
+                            <strong>Capacidad máxima:</strong>
+
+                            <span th:text="${proximaClase.capacidadMaxima}">
+                                15
+                            </span>
+
+                            personas
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <a th:href="@{/entrenador/clases}"
+                   class="btn btn-outline-primary mt-3">
+
+                    <i class="bi bi-journal-text"></i>
+                    Ver mis clases
+
+                </a>
+
+            </div>
+
+            <!-- CUANDO NO EXISTE UNA PRÓXIMA CLASE -->
+
+            <div th:if="${proximaClase == null}"
+                 class="text-center py-4">
+
+                <i class="bi bi-calendar-x"
+                   style="font-size: 38px; color: #94a3b8;"></i>
+
+                <h6 class="mt-3">
+                    No tienes próximas clases programadas
+                </h6>
+
+                <p class="text-muted">
+                    Programa una nueva clase para organizar
+                    tus próximas actividades de entrenamiento.
+                </p>
+
+                <a th:href="@{/entrenador/clases/nueva}"
+                   class="btn btn-primary mt-2">
+
+                    <i class="bi bi-calendar-plus"></i>
+                    Programar nueva clase
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- ========================================= -->
+        <!-- FUNCIONALIDADES DEL ENTRENADOR -->
+        <!-- ========================================= -->
+
+        <div class="row g-4">
+
+            <!-- ================================= -->
+            <!-- 1. MI AGENDA -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="content-card">
+
+                    <i class="bi bi-calendar-week feature-icon"></i>
+
+                    <h5 class="feature-title">
+                        Mi agenda
+                    </h5>
+
+                    <p class="text-muted">
+                        Consulta tu programación semanal
+                        y revisa las clases asignadas
+                        para cada día.
+                    </p>
+
+                    <div class="feature-action">
+
+                        <a th:href="@{/entrenador/clases/agenda}"
+                           class="btn btn-primary btn-sm">
+
+                            <i class="bi bi-calendar-week"></i>
+                            Ver mi agenda
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- 2. MIS CLASES -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="content-card">
+
+                    <i class="bi bi-journal-text feature-icon"></i>
+
+                    <h5 class="feature-title">
+                        Mis clases
+                    </h5>
+
+                    <p class="text-muted">
+                        Organiza tus clases de entrenamiento,
+                        consulta sus detalles y administra
+                        las actividades programadas.
+                    </p>
+
+                    <div class="feature-action">
+
+                        <a th:href="@{/entrenador/clases}"
+                           class="btn btn-primary btn-sm">
+
+                            <i class="bi bi-arrow-right-circle"></i>
+                            Ver mis clases
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- 3. SOLICITUDES -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="content-card">
+
+                    <i class="bi bi-clipboard-check feature-icon"></i>
+
+                    <h5 class="feature-title">
+                        Solicitudes
+                    </h5>
+
+                    <p class="text-muted">
+                        Consulta las solicitudes recibidas
+                        y gestiona su confirmación
+                        o rechazo.
+                    </p>
+
+                    <div class="feature-action">
+
+                        <a th:href="@{/entrenador/solicitudes}"
+                           class="btn btn-primary btn-sm">
+
+                            <i class="bi bi-clipboard-check"></i>
+                            Ver solicitudes
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================================= -->
+            <!-- 4. ASISTENTES -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="content-card">
+
+                    <i class="bi bi-people feature-icon"></i>
+
+                    <h5 class="feature-title">
+                        Asistentes
+                    </h5>
+
+                    <p class="text-muted">
+                        Consulta los clientes inscritos
+                        en tus clases de entrenamiento,
+                        revisa su información personal
+                        y verifica sus reservas confirmadas.
+                    </p>
+
+                    <div class="feature-action">
+
+                        <a th:href="@{/entrenador/asistentes}"
+                           class="btn btn-primary btn-sm">
+
+                            <i class="bi bi-people"></i>
+                            Ver asistentes
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
